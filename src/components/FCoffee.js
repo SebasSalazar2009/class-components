@@ -1,22 +1,34 @@
-import react, {useState} from 'react'
+import react, { useState, useEffect } from "react";
 
+function FCoffee({ firstName }) {
+  const [coffeList, setCoffeList] = useState();
+  const [temperature, setTemperature] = useState("hot");
+  useEffect(() => {
+    fetch(`https://api.sampleapis.com/coffee/${temperature}`)
+      .then((response) => response.json())
+      .then((data) => setCoffeList(data))
+      .catch(console.error);
+  }, [temperature]);
 
-function FCoffee ({firstName}) {
-    const [count, setCount] = useState (0);
-    const handleClick = () => {
-        setCount(count + 1);
+  return (
+    <>
+      <h1>Coffee List(F)</h1>
+      <p>Hello {firstName}</p>
+      <button onClick={() => setTemperature("hot")}>HOT</button>
+      <button onClick={() => setTemperature("iced")}>ICED</button>
 
-    }
-    return (
+      {!coffeList ? (
+        <h2>Loading...</h2>
+      ) : (
         <>
-        <h1>Coffe List(F)</h1>
-        <p>Hello {firstName}</p>
-        <p>you clicked the button {count} times.</p>
-        <button onClick={handleClick}>Click Me</button>
+          <h2>Coffees</h2>
+          {coffeList.map((coffee) => {
+            return <p key={coffee.id}>{coffee.title}</p>;
+          })}
         </>
-    )
+      )}
+    </>
+  );
 }
-
-
 
 export default FCoffee;
